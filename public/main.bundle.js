@@ -137,7 +137,7 @@ eval("\n/**\n * When source maps are enabled, `style-loader` uses a link element
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-eval("\n\n//# sourceURL=webpack:///./src/area23.js?");
+eval("window.addEventListener(\"load\",(e)=>{\r\n    smartDeviceDirection();\r\n},false);\r\n\r\n\r\nwindow.addEventListener(\"orientationchange\",(e)=>{\r\n    smartDeviceDirection();\r\n},false);\r\n\r\nsmartDeviceDirection = ()=>{\r\n    let body = document.getElementsByTagName(\"body\")[0];\r\n\r\n    if(window.orientation === 0){\r\n        console.log(\"tate\");\r\n        body.style.backgroundColor = \"red\";\r\n    }else if(window.orientation === 90){\r\n        console.log(\"yoko\");\r\n        body.style.backgroundColor = \"blue\";\r\n    }else if(window.orientation === 180){\r\n        console.log(\"tate\");\r\n        body.style.backgroundColor = \"white\";\r\n    }else if(window.orientation === -90){\r\n        console.log(\"yoko\");\r\n        body.style.backgroundColor = \"green\";\r\n    }\r\n}\n\n//# sourceURL=webpack:///./src/area23.js?");
 
 /***/ }),
 
