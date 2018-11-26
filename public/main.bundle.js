@@ -93,7 +93,7 @@
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("exports = module.exports = __webpack_require__(/*! ../node_modules/css-loader/lib/css-base.js */ \"./node_modules/css-loader/lib/css-base.js\")(false);\n// imports\n\n\n// module\nexports.push([module.i, \"body{\\r\\n    margin : 0;\\r\\n    width : 100%;\\r\\n    height : 100%;\\r\\n    min-width : 100%;\\r\\n    min-height : 100%;\\r\\n    background-color: black;\\r\\n}\", \"\"]);\n\n// exports\n\n\n//# sourceURL=webpack:///./src/main.css?./node_modules/css-loader");
+eval("exports = module.exports = __webpack_require__(/*! ../node_modules/css-loader/lib/css-base.js */ \"./node_modules/css-loader/lib/css-base.js\")(false);\n// imports\n\n\n// module\nexports.push([module.i, \"body{\\r\\n    margin : 0;\\r\\n    width : 100%;\\r\\n    height : 100%;\\r\\n    min-width : 100%;\\r\\n    min-height : 100%;\\r\\n    background-color: gray;\\r\\n}\", \"\"]);\n\n// exports\n\n\n//# sourceURL=webpack:///./src/main.css?./node_modules/css-loader");
 
 /***/ }),
 
@@ -135,9 +135,9 @@ eval("\n/**\n * When source maps are enabled, `style-loader` uses a link element
   !*** ./src/area23.js ***!
   \***********************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-eval("window.addEventListener(\"load\",(e)=>{\r\n    smartDeviceDirection();\r\n},false);\r\n\r\n\r\nwindow.addEventListener(\"orientationchange\",(e)=>{\r\n    smartDeviceDirection();\r\n},false);\r\n\r\nsmartDeviceDirection = ()=>{\r\n    let body = document.getElementsByTagName(\"body\")[0];\r\n\r\n    if(window.orientation === 0){\r\n        console.log(\"tate\");\r\n        body.style.backgroundColor = \"red\";\r\n    }else if(window.orientation === 90){\r\n        console.log(\"yoko\");\r\n        body.style.backgroundColor = \"blue\";\r\n    }else if(window.orientation === 180){\r\n        console.log(\"tate\");\r\n        body.style.backgroundColor = \"white\";\r\n    }else if(window.orientation === -90){\r\n        console.log(\"yoko\");\r\n        body.style.backgroundColor = \"green\";\r\n    }\r\n}\n\n//# sourceURL=webpack:///./src/area23.js?");
+eval("let glutil = __webpack_require__(/*! ./browser_modules/WebGLUtil.js */ \"./src/browser_modules/WebGLUtil.js\");\r\nlet webgl = new glutil.WebGLUtil();\r\n\r\nlet SceneManager = __webpack_require__(/*! ./browser_modules/SceneManager.js */ \"./src/browser_modules/SceneManager.js\");\r\nlet sceneManager = new SceneManager();\r\n\r\n\r\nwindow.addEventListener(\"load\",(e)=>{\r\n    // smartDeviceDirection();\r\n\r\n    let c = document.getElementsByTagName(\"canvas\");\r\n\r\n    let HammerSetting = __webpack_require__(/*! ./browser_modules/HammerSetting.js */ \"./src/browser_modules/HammerSetting.js\");\r\n    let hammer = new HammerSetting(c[0]);\r\n\r\n    hammer.freeMove(\"canvas\",(unit,kind,e,volume)=>{\r\n        if(unit === \"canvas\"){\r\n            sceneManager.hammer(unit,kind,e,volume);\r\n        }\r\n    });\r\n\r\n    webgl.init(\"canvas\");\r\n    // let innerWidth = window.innerWidth;\r\n    // let innerHeight = window.innerHeight;\r\n    // let screenWidth = screen.width;\r\n    // let screenHeight = screen.height;\r\n    // console.log({innerWidth,innerHeight,screenWidth,screenHeight});\r\n\r\n    webgl.setCanvasSize(800,600);\r\n\r\n\r\n    let Game = __webpack_require__(/*! ./scene/Game/Game.js */ \"./src/scene/Game/Game.js\");\r\n    sceneManager.addScene({\r\n        name : \"Game\",\r\n        instance : new Game(webgl,sceneManager)\r\n    });\r\n\r\n    sceneManager.init();\r\n\r\n    sceneManager.initScene(\"Game\");\r\n\r\n\r\n    let timerFunc = ()=>{\r\n        webgl.preDraw();\r\n\r\n        sceneManager.drawBackground();\r\n        webgl.flush();\r\n\r\n        sceneManager.drawPerspective();\r\n        webgl.flush();\r\n\r\n        sceneManager.drawUI();\r\n        webgl.flush();\r\n\r\n        sceneManager.timer();\r\n        webgl.flush();\r\n\r\n        requestAnimationFrame(timerFunc);\t\r\n    }\r\n    timerFunc();\r\n\r\n},false);\r\n\r\n\r\nwindow.addEventListener(\"orientationchange\",(e)=>{\r\n    // smartDeviceDirection();\r\n},false);\r\n\r\nlet smartDeviceDirection = ()=>{\r\n    let body = document.getElementsByTagName(\"body\")[0];\r\n\r\n    if(window.orientation === 0){\r\n        console.log(\"tate\");\r\n        body.style.backgroundColor = \"red\";\r\n    }else if(window.orientation === 90){\r\n        console.log(\"yoko\");\r\n        body.style.backgroundColor = \"blue\";\r\n    }else if(window.orientation === 180){\r\n        console.log(\"tate\");\r\n        body.style.backgroundColor = \"white\";\r\n    }else if(window.orientation === -90){\r\n        console.log(\"yoko\");\r\n        body.style.backgroundColor = \"green\";\r\n    }\r\n}\n\n//# sourceURL=webpack:///./src/area23.js?");
 
 /***/ }),
 
@@ -207,6 +207,28 @@ eval("// -----------------------------------------------------------------------
 
 /***/ }),
 
+/***/ "./src/const.frag":
+/*!************************!*\
+  !*** ./src/const.frag ***!
+  \************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("module.exports = \"precision mediump float;\\r\\n\\r\\nuniform sampler2D color_tex; \\r\\nuniform vec4 config;\\r\\n\\r\\nuniform sampler2D texture;\\r\\n\\r\\nvarying vec2 vtx_uv;\\r\\n\\r\\nvoid main(void){\\r\\n\\tvec4 smpColor = texture2D(texture,vtx_uv.st);\\r\\n\\t// gl_FragColor = smpColor + vec4(vec3(0.2),1.0);\\r\\n\\tgl_FragColor = smpColor;\\r\\n    // if(gl_FragColor.a < 0.01){\\r\\n    //     discard;\\r\\n    // }\\r\\n}\\r\\n\"\n\n//# sourceURL=webpack:///./src/const.frag?");
+
+/***/ }),
+
+/***/ "./src/const.vert":
+/*!************************!*\
+  !*** ./src/const.vert ***!
+  \************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("module.exports = \"attribute vec3 position;\\r\\nattribute vec2 textureCoord;\\r\\nuniform vec3 at;\\r\\n\\r\\nuniform vec4 texture_scale;\\r\\nuniform vec4 scale;\\r\\nuniform vec4 translate;\\r\\n\\r\\nvarying vec2 vtx_uv;\\r\\nvarying vec4 vtx_col;\\r\\nvarying vec3 vtx_eye;\\r\\nvarying vec3 vtx_pos;\\r\\nvarying vec3 vtx_dir;\\r\\n\\r\\nvoid main(){\\r\\n    vtx_uv = textureCoord;// uvをfragに渡す\\r\\n\\r\\n    vec4 pos = vec4(position,1.0);\\r\\n\\r\\n    pos *= (scale * texture_scale);\\r\\n    pos += translate;\\r\\n\\r\\n\\tgl_Position = pos;\\r\\n}\"\n\n//# sourceURL=webpack:///./src/const.vert?");
+
+/***/ }),
+
 /***/ "./src/main.css":
 /*!**********************!*\
   !*** ./src/main.css ***!
@@ -225,7 +247,29 @@ eval("\nvar content = __webpack_require__(/*! !../node_modules/css-loader!./main
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("(()=>{\r\n    __webpack_require__(/*! ./main.css */ \"./src/main.css\");\r\n\r\n    __webpack_require__(/*! ./browser_modules/WebSocketClient.js */ \"./src/browser_modules/WebSocketClient.js\");\r\n    __webpack_require__(/*! ./browser_modules/WebGLUtil.js */ \"./src/browser_modules/WebGLUtil.js\");\r\n    __webpack_require__(/*! ./browser_modules/SceneManager.js */ \"./src/browser_modules/SceneManager.js\");\r\n    __webpack_require__(/*! ./browser_modules/minMatrixb.js */ \"./src/browser_modules/minMatrixb.js\");\r\n    __webpack_require__(/*! ./browser_modules/hammer.min.js */ \"./src/browser_modules/hammer.min.js\");\r\n    __webpack_require__(/*! ./browser_modules/HammerSetting.js */ \"./src/browser_modules/HammerSetting.js\");\r\n    \r\n    __webpack_require__(/*! ./area23.js */ \"./src/area23.js\");\r\n\r\n    // require(\"./scene/Standby/Standby.js\");\r\n\r\n})();\r\n\n\n//# sourceURL=webpack:///./src/main.js?");
+eval("(()=>{\r\n    __webpack_require__(/*! ./main.css */ \"./src/main.css\");\r\n\r\n    __webpack_require__(/*! ./browser_modules/WebSocketClient.js */ \"./src/browser_modules/WebSocketClient.js\");\r\n    __webpack_require__(/*! ./browser_modules/WebGLUtil.js */ \"./src/browser_modules/WebGLUtil.js\");\r\n    __webpack_require__(/*! ./browser_modules/SceneManager.js */ \"./src/browser_modules/SceneManager.js\");\r\n    __webpack_require__(/*! ./browser_modules/minMatrixb.js */ \"./src/browser_modules/minMatrixb.js\");\r\n    __webpack_require__(/*! ./browser_modules/hammer.min.js */ \"./src/browser_modules/hammer.min.js\");\r\n    __webpack_require__(/*! ./browser_modules/HammerSetting.js */ \"./src/browser_modules/HammerSetting.js\");\r\n    \r\n    __webpack_require__(/*! ./area23.js */ \"./src/area23.js\");\r\n\r\n    __webpack_require__(/*! ./scene/Game/Game.js */ \"./src/scene/Game/Game.js\");\r\n\r\n})();\r\n\n\n//# sourceURL=webpack:///./src/main.js?");
+
+/***/ }),
+
+/***/ "./src/scene/Game/Game.js":
+/*!********************************!*\
+  !*** ./src/scene/Game/Game.js ***!
+  \********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+eval("class Game{\r\n    constructor(webgl,sceneManager){\r\n        console.log(\"yaya\");\r\n        const LifeCell = __webpack_require__(/*! ./LifeCell.js */ \"./src/scene/Game/LifeCell.js\");\r\n        this.lifeCell = new LifeCell(webgl);\r\n    }\r\n    init(){\r\n    }\r\n    moveIn(){\r\n    \r\n    }\r\n\r\n    timer(){\r\n\r\n    }\r\n\r\n    drawUI(){\r\n        this.lifeCell.model.draw();\r\n    }\r\n\r\n    hammer(unit,kind,e,volume){\r\n        if(kind === \"TAP\"){\r\n            let mouse_location = {\r\n                x:e.srcEvent.layerX,\r\n                y:e.srcEvent.layerY\r\n            }\r\n\r\n            this.lifeCell.model.getTouchCollision(mouse_location,()=>{\r\n                console.log(\"tap tap\");\r\n            })\r\n        }\r\n    }\r\n\r\n\r\n    moveOut(){\r\n\r\n    }\r\n}\r\nmodule.exports = Game;\n\n//# sourceURL=webpack:///./src/scene/Game/Game.js?");
+
+/***/ }),
+
+/***/ "./src/scene/Game/LifeCell.js":
+/*!************************************!*\
+  !*** ./src/scene/Game/LifeCell.js ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+eval("class LifeCell{\r\n    constructor(webgl){\r\n        this.webgl = webgl;\r\n        console.log(\"LifeCell\");\r\n        this.surround = [];\r\n        this.state = {\r\n            live : false,\r\n            age : 0\r\n        };\r\n\r\n        this.model = null;\r\n\r\n        this.init();\r\n    }\r\n\r\n    init(){\r\n        this.glGenerate(\"./img/cell.png\",[0.0,0.0,0.0,0.0]);\r\n    }\r\n\r\n    addSurround(cell){\r\n        surround.add(cell);\r\n    }\r\n\r\n    nextTurn(){\r\n        if(this.state.live){\r\n            this.state.age++;\r\n\r\n            if(this.state.age > 10){\r\n                this.forceKill();\r\n            }\r\n\r\n        }else{\r\n\r\n        }\r\n    }\r\n\r\n    forceSpawn(){\r\n        this.state.live = true;\r\n        this.state.age = 0;\r\n    }\r\n\r\n    forceKill(){\r\n        this.state.live = false;\r\n    }\r\n\r\n    glGenerate(texturePath,translate){\r\n\r\n        let scale = this.webgl.c.width / 1000;\r\n        let glutil = __webpack_require__(/*! ./../../browser_modules/WebGLUtil.js */ \"./src/browser_modules/WebGLUtil.js\");\r\n\r\n        this.model = new glutil.OrthoModel(this.webgl);\r\n        this.model.createPlate(__webpack_require__(/*! ./../../const.vert */ \"./src/const.vert\"),__webpack_require__(/*! ./../../const.frag */ \"./src/const.frag\"));\r\n        console.log({texturePath,translate})\r\n\r\n        this.model.setTexture(texturePath,()=>{\r\n            this.model.setUniform4(\"scale\",[scale,scale,1.0,1.0]);\r\n        });\r\n        this.model.setUniform4(\"translate\",translate);\r\n    }\r\n}\r\nmodule.exports = LifeCell;\n\n//# sourceURL=webpack:///./src/scene/Game/LifeCell.js?");
 
 /***/ })
 

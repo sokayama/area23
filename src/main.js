@@ -10,6 +10,6 @@
     
     require("./area23.js");
 
-    // require("./scene/Standby/Standby.js");
+    require("./scene/Game/Game.js");
 
 })();
