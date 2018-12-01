@@ -46,7 +46,7 @@ class WebGLUtil {
 
 	setCanvasSize(width,height){
 		let DPR = window.devicePixelRatio;
-		console.log({width,height,DPR})
+		console.log("[WeGLUtil : setCanvasSize]",{width,height,DPR})
 		this.c.style.width = width;
 		this.c.style.height = height;
 		
@@ -212,9 +212,11 @@ class PrimitiveModel{
 
 	setUniform4(uniform,param){
 		if(uniform === "scale"){
-			this.scale = param;
+			console.error("[WebGLUtil : setUniform4] use setScale(param)");
+			return;
 		}else if(uniform === "translate"){
-			this.translate = param;
+			console.error("[WebGLUtil : setUniform4] use setTranslate(param)");
+			return;
 		}
 
 		if(this.prg){
@@ -236,6 +238,13 @@ class PrimitiveModel{
 			this.glclass.gl.uniform4fv(uni,param);
 		}else{
 		}
+	}
+
+	setTranslatePixel(x,y){
+		let trans_x = (x - (this.glclass.c.width)) * (1 / this.glclass.c.width);
+		let trans_y = (y - (this.glclass.c.height)) * (1 / this.glclass.c.height);
+		// console.log("setTranslatePixel",{trans_x,trans_y});
+		this.setTranslate([trans_x,trans_y,0.0,0.0]);
 	}
 
 	setTranslate(param){

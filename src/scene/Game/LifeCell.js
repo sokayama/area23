@@ -10,11 +10,10 @@ class LifeCell{
 
         this.model = null;
 
-        this.init();
     }
 
-    init(){
-        this.glGenerate("./img/cell.png",[0.0,0.0,0.0,0.0]);
+    init(translate){
+        this.glGenerate("./img/cell.png",translate);
     }
 
     addSurround(cell){
@@ -45,17 +44,17 @@ class LifeCell{
 
     glGenerate(texturePath,translate){
 
-        let scale = this.webgl.c.width / 1000;
+        let scale = 1.0;
         let glutil = require("./../../browser_modules/WebGLUtil.js");
 
         this.model = new glutil.OrthoModel(this.webgl);
         this.model.createPlate(require("./../../const.vert"),require("./../../const.frag"));
-        console.log({texturePath,translate})
+        // console.log({texturePath,translate})
 
         this.model.setTexture(texturePath,()=>{
-            this.model.setUniform4("scale",[scale,scale,1.0,1.0]);
+            this.model.setScale([scale,scale,1.0,1.0]);
         });
-        this.model.setUniform4("translate",translate);
+        this.model.setTranslatePixel(translate[0],translate[1]);
     }
 }
 module.exports = LifeCell;
