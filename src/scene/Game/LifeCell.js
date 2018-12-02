@@ -10,6 +10,15 @@ class LifeCell{
 
         this.model = null;
 
+        this.fieldSize = {
+            col : 0,
+            row : 0
+        }
+    }
+
+    setFieldSize(col,row){
+        this.fieldSize.col = col;
+        this.fieldSize.row = row;
     }
 
     init(translate){

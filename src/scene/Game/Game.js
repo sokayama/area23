@@ -12,9 +12,10 @@ class Game{
 
         for(let i=0;i<LIFECELL_MAX;i++){
             this.lifeCell[i] = new LifeCell(webgl);
+            this.lifeCell[i].setFieldSize(LIFECELL_COL,LIFECELL_ROW);
         }
-
     }
+
     init(){
         let boardMargin= {
             x : 500,
