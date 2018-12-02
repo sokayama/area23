@@ -5,6 +5,7 @@ class LifeCell{
         this.surround = [];
         this.state = {
             live : false,
+            kind : null,
             age : 0
         };
 
@@ -16,6 +17,10 @@ class LifeCell{
         }
     }
 
+    getState(){
+        return this.state;
+    }
+
     setFieldSize(col,row){
         this.fieldSize.col = col;
         this.fieldSize.row = row;
@@ -23,6 +28,10 @@ class LifeCell{
 
     init(translate){
         this.glGenerate("./img/cell.png",translate);
+    }
+
+    cleanupSurround(){
+        surrround = [];
     }
 
     addSurround(cell){
@@ -38,7 +47,19 @@ class LifeCell{
             }
 
         }else{
+            for(let i in this.surround){
+                if(this.surround[i].state.kind === null){
 
+                }
+            }
+        }
+    }
+
+    click(){
+        if(this.state.live === true){
+            this.forceKill();
+        }else{
+            this.forceSpawn();
         }
     }
 

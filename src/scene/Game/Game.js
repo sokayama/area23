@@ -14,6 +14,8 @@ class Game{
             this.lifeCell[i] = new LifeCell(webgl);
             this.lifeCell[i].setFieldSize(LIFECELL_COL,LIFECELL_ROW);
         }
+
+        this.counter = 0;
     }
 
     init(){
@@ -33,7 +35,24 @@ class Game{
     }
 
     timer(){
+        this.counter++;
+        if(this.counter % 10){
+            for(let i in this.lifeCell){
+                this.lifeCell[i].cleaupSurround();
+            }
+            
+            this.surroundFunc();
 
+            for(let i in this.lifeCell){
+                this.lifeCell[i].nextTurn();
+            }            
+        }
+    }
+
+    surroundFunc(){
+        for(let i in this.lifeCell){
+            
+        }
     }
 
     drawUI(){
@@ -52,6 +71,7 @@ class Game{
             for(let i=0;i<LIFECELL_MAX;i++){
                 this.lifeCell[i].model.getTouchCollision(mouse_location,()=>{
                     console.log("tap",i);
+                    this.lifeCell[i].click();
                 });
             }
         }
