@@ -24,9 +24,52 @@ class Game{
             y : 400
         }
         for(let i=0;i<LIFECELL_MAX;i++){
-            let x = ((i % LIFECELL_COL) * 200) + boardMargin.x;
-            let y = Math.floor(i / LIFECELL_COL) * 200 + boardMargin.y;
+            this.lifeCell[i].location[0] = (i % LIFECELL_COL)
+            let x = (this.lifeCell[i].location[0] * 205) + boardMargin.x;
+
+            this.lifeCell[i].location[1] = Math.floor(i / LIFECELL_COL)
+            let y = (this.lifeCell[i].location[1] * 205) + boardMargin.y;
+
             this.lifeCell[i].init([x,y,0.0,0.0]);
+        }
+
+        for(let i=0;i<LIFECELL_MAX;i++){
+            if(i%LIFECELL_COL - 1 >= 0){
+                this.lifeCell[i].addSurround(this.lifeCell[i-1]);
+            }
+
+            if(i%LIFECELL_COL + 1 <= LIFECELL_COL){
+                this.lifeCell[i].addSurround(this.lifeCell[i+1]);
+            }
+
+            if(i-LIFECELL_COL >= 0){
+                this.lifeCell[i].addSurround(this.lifeCell[i-LIFECELL_COL]);
+            }
+
+            if(i+LIFECELL_COL <= LIFECELL_MAX){
+                this.lifeCell[i].addSurround(this.lifeCell[i+LIFECELL_COL]);
+            }
+
+            if(i%LIFECELL_COL - 1 >= 0){
+                if(i-LIFECELL_COL >= 0){
+                    this.lifeCell[i].addSurround(this.lifeCell[i-LIFECELL_COL-1]);
+                }
+    
+                if(i+LIFECELL_COL <= LIFECELL_MAX){
+                    this.lifeCell[i].addSurround(this.lifeCell[i+LIFECELL_COL-1]);
+                }
+            }
+
+            if(i+LIFECELL_COL <= LIFECELL_MAX){
+                if(i-LIFECELL_COL >= 0){
+                    this.lifeCell[i].addSurround(this.lifeCell[i-LIFECELL_COL+1]);
+                }
+    
+                if(i+LIFECELL_COL <= LIFECELL_MAX){
+                    this.lifeCell[i].addSurround(this.lifeCell[i+LIFECELL_COL+1]);
+                }
+            }
+
         }
     }
 
@@ -36,13 +79,7 @@ class Game{
 
     timer(){
         this.counter++;
-        if(this.counter % 10){
-            for(let i in this.lifeCell){
-                this.lifeCell[i].cleanupSurround();
-            }
-            
-            this.surroundFunc();
-
+        if(this.counter % 100 === 0){
             for(let i in this.lifeCell){
                 this.lifeCell[i].nextTurn();
             }            

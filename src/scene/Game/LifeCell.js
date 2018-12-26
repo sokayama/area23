@@ -2,6 +2,8 @@ class LifeCell{
     constructor(webgl){
         this.webgl = webgl;
         console.log("LifeCell");
+        this.location = [];
+
         this.surround = [];
         this.state = {
             live : false,
@@ -15,6 +17,9 @@ class LifeCell{
             col : 0,
             row : 0
         }
+
+        this.redTexture = null;
+        this.greenTexture = null;
     }
 
     getState(){
@@ -26,16 +31,24 @@ class LifeCell{
         this.fieldSize.row = row;
     }
 
-    init(translate){
-        this.glGenerate("./img/cell.png",translate);
+    async init(translate){
+        this.glGenerate(translate);
+        this.redTexture = await this.model.createTexture("./img/redcell.png");
+        this.greenTexture = await this.model.createTexture("./img/greencell.png");
+
+        this.model.bindTextureInfo(this.redTexture);
     }
 
     cleanupSurround(){
-        this.surrround = [];
+        this.surround = [];
     }
 
     addSurround(cell){
-        surround.add(cell);
+        console.log()
+        if(cell){
+            this.surround.push(cell);
+        }else{
+        }
     }
 
     nextTurn(){
@@ -47,10 +60,18 @@ class LifeCell{
             }
 
         }else{
+            let count = 0;
             for(let i in this.surround){
-                if(this.surround[i].state.kind === null){
-
+                // console.log(this.surround)
+                // console.log("turnelse",this.surround[i])
+                if(this.surround[i].state.live === true){
+                    count++;
                 }
+            }
+            if(count > 3){
+                console.log("@@@@@")
+
+                this.forceSpawn();
             }
         }
     }
@@ -64,15 +85,17 @@ class LifeCell{
     }
 
     forceSpawn(){
+        this.model.bindTextureInfo(this.greenTexture);
         this.state.live = true;
         this.state.age = 0;
     }
 
     forceKill(){
+        this.model.bindTextureInfo(this.redTexture);
         this.state.live = false;
     }
 
-    glGenerate(texturePath,translate){
+    glGenerate(translate){
 
         let scale = 1.0;
         let glutil = require("./../../browser_modules/WebGLUtil.js");
@@ -80,10 +103,8 @@ class LifeCell{
         this.model = new glutil.OrthoModel(this.webgl);
         this.model.createPlate(require("./../../const.vert"),require("./../../const.frag"));
         // console.log({texturePath,translate})
-
-        this.model.setTexture(texturePath,()=>{
-            this.model.setScale([scale,scale,1.0,1.0]);
-        });
+        
+        this.model.setScale([scale,scale,1.0,1.0]);
         this.model.setTranslatePixel(translate[0],translate[1]);
     }
 }

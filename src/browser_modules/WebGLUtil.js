@@ -82,44 +82,45 @@ class WebGLUtil {
 	 * テクスチャを生成する関数
 	 * @param {string} source テクスチャに適用する画像ファイルのパス
 	 */
-	create_texture(source,callback){
-		let cbFunc = callback;
-		// イメージオブジェクトの生成
-		let img = new Image();
-		// データのオンロードをトリガーにする
-		img.addEventListener("load",()=>{
-			let texture_size = {};
-			texture_size.x = img.width;
-			texture_size.y = img.height;
+	createTexture(source){
+		return new Promise((resolve,reject)=>{
+			// イメージオブジェクトの生成
+			let img = new Image();
+			// データのオンロードをトリガーにする
+			img.addEventListener("load",()=>{
+				let texture_size = {};
+				texture_size.x = img.width;
+				texture_size.y = img.height;
 
-			// テクスチャオブジェクトの生成
-			this.texture.push(this.gl.createTexture());
-			
-			// テクスチャをバインドする
-			this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture[this.texture.length-1]);
-			
-			// テクスチャへイメージを適用
-			this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, img);
-			
-			//テクスチャパラメータ
-			this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
-			this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.NEAREST);
+				// テクスチャオブジェクトの生成
+				let texture = this.gl.createTexture();
+				
+				// テクスチャをバインドする
+				this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
+				
+				// テクスチャへイメージを適用
+				this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, img);
+				
+				//テクスチャパラメータ
+				this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
+				this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.NEAREST);
 
-			this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
-			this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
+				this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
+				this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
 
-			// ミップマップを生成
-			// this.gl.generateMipmap(this.gl.TEXTURE_2D);
-			
-			// テクスチャのバインドを無効化
-			this.gl.bindTexture(this.gl.TEXTURE_2D, null);
-			
-			cbFunc(this.texture.length-1,texture_size);
-		},false);
+				// ミップマップを生成
+				// this.gl.generateMipmap(this.gl.TEXTURE_2D);
+				
+				// テクスチャのバインドを無効化
+				this.gl.bindTexture(this.gl.TEXTURE_2D, null);
+				
+				resolve({texture,texture_size});
+			},false);
 
-		// イメージオブジェクトのソースを指定
-		img.src = source;
-		// console.log("create_texture",img.src);
+			// イメージオブジェクトのソースを指定
+			img.src = source;
+			// console.log("create_texture",img.src);
+		});
 	}
 }
 
@@ -136,8 +137,6 @@ class PrimitiveModel{
 		this.attVBO = {};    
 		this.ibo = null;
 		
-		this.textureObject = null;
-
 		this.scale = [1.0,1.0,1.0];
 		this.translate = [0.0,0.0,0.0];
 
@@ -396,6 +395,12 @@ class PrimitiveModel{
 class OrthoModel extends PrimitiveModel {
 	constructor(glclass){
 		super(glclass);
+		this.textureUniformLocation = null;
+
+		this.textureInfo = {
+			texture : null,
+			size : []
+		};
 		this.texture_scale = [];
 		this.enable = true;
 	}
@@ -406,11 +411,11 @@ class OrthoModel extends PrimitiveModel {
 				if(this.prg){
 					this.glclass.gl.blendFunc(this.glclass.gl.SRC_ALPHA, this.glclass.gl.ONE_MINUS_SRC_ALPHA);
 					this.glclass.gl.enable(this.glclass.gl.BLEND);
-					if(this.textureObject){
+					if(this.textureInfo.texture && this.textureUniformLocation){
 						this.glclass.gl.useProgram(this.prg);
 						this.glclass.gl.activeTexture(this.glclass.gl.TEXTURE0);
-						this.glclass.gl.bindTexture(this.glclass.gl.TEXTURE_2D, this.textureObject.texture);
-						this.glclass.gl.uniform1i(this.textureObject.uniformLocation,0);
+						this.glclass.gl.bindTexture(this.glclass.gl.TEXTURE_2D, this.textureInfo.texture);
+						this.glclass.gl.uniform1i(this.textureUniformLocation,0);
 					}
 					this.glclass.gl.drawElements(this.glclass.gl.TRIANGLES, this.index.length, this.glclass.gl.UNSIGNED_SHORT, 0);
 
@@ -447,6 +452,26 @@ class OrthoModel extends PrimitiveModel {
 			this.setPixelScale(size.x,size.y);
 			callback(size);
 		});
+	}
+
+	async createTexture(imagePath){
+		return new Promise(async (resolve,reject)=>{
+			const tex = await this.glclass.createTexture(imagePath);
+
+			let textureInfo = {}
+			textureInfo.texture = tex.texture;
+			textureInfo.size = tex.texture_size;
+			
+			resolve(textureInfo);
+		});
+	}
+
+	bindTextureInfo(textureInfo){
+		this.textureUniformLocation = this.glclass.gl.getUniformLocation(this.prg, "texture");
+
+		this.textureInfo = textureInfo;
+
+		this.setPixelScale(textureInfo.size.x,textureInfo.size.y);
 	}
 
 	getTouchCollision(mouse,callback){
