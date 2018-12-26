@@ -38,7 +38,7 @@ class Game{
         this.counter++;
         if(this.counter % 10){
             for(let i in this.lifeCell){
-                this.lifeCell[i].cleaupSurround();
+                this.lifeCell[i].cleanupSurround();
             }
             
             this.surroundFunc();

@@ -31,7 +31,7 @@ class LifeCell{
     }
 
     cleanupSurround(){
-        surrround = [];
+        this.surrround = [];
     }
 
     addSurround(cell){

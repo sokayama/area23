@@ -12,7 +12,7 @@ void main(void){
 	// gl_FragColor = smpColor + vec4(vec3(0.2),1.0);
 	gl_FragColor = smpColor;
 
-    gl_FragColor.rg = vtx_uv;
+    // gl_FragColor.rg = vtx_uv;
     // if(gl_FragColor.a < 0.01){
     //     discard;
     // }
